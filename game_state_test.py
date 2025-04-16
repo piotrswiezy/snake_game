@@ -160,7 +160,7 @@ class GameStateTest(unittest.TestCase):
                 Position(1, 2),
                 Position(0, 2)
             ],
-            direction = Direction.UP,
+            direction = Direction.LEFT,
             food = Position(10, 10),
             field_size = 20
         )
