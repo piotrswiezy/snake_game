@@ -218,3 +218,64 @@ class GameStateTest(unittest.TestCase):
         from game_state import INITIAL_DIRECTION
         self.assertEqual(INITIAL_DIRECTION, state.direction)
         self.assertEqual(25, state.field_size)
+        self.assertEqual(False, state.food in state.snake)
+
+    def test_turn(self):
+        state = GameState(
+            snake = [
+                Position(1, 2),
+                Position(2, 2),
+                Position(3, 2),
+                Position(3, 3),
+                Position(2, 3)
+            ],
+            direction = Direction.UP,
+            food = Position(3, 1),
+            field_size = 25
+        )
+
+        state.turn(Direction.LEFT)
+        self.assertEqual(Direction.LEFT, state.direction)
+
+        state.turn(Direction.UP)
+        self.assertEqual(Direction.UP, state.direction)
+
+        state.turn(Direction.DOWN)
+        self.assertEqual(Direction.DOWN, state.direction)
+
+        state.turn(Direction.RIGHT)
+        self.assertEqual(Direction.DOWN, state.direction)
+
+    def test_can_turn(self):
+        state = GameState(
+            snake = [
+                Position(1, 2),
+                Position(2, 2),
+                Position(3, 2),
+                Position(3, 3),
+                Position(2, 3)
+            ],
+            direction = Direction.UP,
+            food = Position(3, 1),
+            field_size = 25
+        )
+
+        self.assertEqual(
+            True,
+            state.can_turn(Direction.LEFT)
+        )
+
+        self.assertEqual(
+            True,
+            state.can_turn(Direction.UP)
+        )
+
+        self.assertEqual(
+            True,
+            state.can_turn(Direction.DOWN)
+        )
+
+        self.assertEqual(
+            False,
+            state.can_turn(Direction.RIGHT)
+        )

@@ -83,3 +83,6 @@ class GameState:
         else:
             self.snake = self.snake[1:]
 
+    def turn(self, direction):
+        if self.can_turn(direction):
+            self.direction = direction
