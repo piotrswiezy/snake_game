@@ -1,7 +1,9 @@
+from math import sqrt
+
 import pygame
 from position import Position
 from direction import Direction
-from game_state import GameState
+from game_state import GameState, INITIAL_SNAKE, INITIAL_DIRECTION
 from random import randint
 
 pygame.init()
@@ -28,7 +30,7 @@ def draw_snake_part(pos):
     pygame.draw.rect(screen, GREEN, position)
 
 def draw_food(pos):
-    food_color = RED
+    food_color = (randint(0, 255), randint(0, 255), randint(0, 255))
     radius = float(CUBE_SIZE) / 2
     position = (pos.x * CUBE_SIZE + radius,
                 pos.y * CUBE_SIZE + radius)
@@ -41,6 +43,16 @@ snake = [
     Position(5, 2),
     Position(5, 1),
 ]
+
+
+def set_random_food_position():
+    search = True
+    while search:
+        field_size = CUBES_NUM
+        food = Position(
+            randint(0, field_size - 1),
+            randint(0, field_size - 1)
+        )
 
 def draw_snake(snake):
     for part in snake:
@@ -56,14 +68,19 @@ def draw(snake, food):
     draw_food(food)
     pygame.display.update()
 
+def set_initial_position():
+        snake = INITIAL_SNAKE[:]
+        direction = INITIAL_DIRECTION
+        set_random_food_position()
 state = GameState(
     None, None, None, CUBES_NUM
 )
+state.set_random_food_position()
 state.set_initial_position()
 
 clock = pygame.time.Clock()
 while True:
-    clock.tick(5 + state.snake.__len__() // 5)
+    clock.tick(5 + sqrt(state.snake.__len__() // 2))
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -81,7 +98,13 @@ while True:
 
             elif event.key == pygame.K_DOWN:
                 state.turn(Direction.DOWN)
-    state.step()
-    draw(state.snake, state.food)
 
+            elif event.key == pygame.K_ESCAPE:
+                quit()
+
+            elif event.key == pygame.K_BACKSPACE:
+                state.set_initial_position()
+
+    draw(state.snake, state.food)
+    state.step()
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/
