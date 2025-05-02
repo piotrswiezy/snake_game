@@ -38,6 +38,7 @@ class GameState:
         self.snake = INITIAL_SNAKE[:]
         self.direction = INITIAL_DIRECTION
         self.set_random_food_position()
+        self.set_random_food_position(True)
 
 
     def next_head(self, direction):
@@ -88,7 +89,7 @@ class GameState:
     def step(self):
         new_head = self.next_head(self.direction)
 
-        collision = new_head in self.snake
+        collision = new_head in self.snake or new_head == self.poisonous_food
         if collision:
             self.set_initial_position()
             return
