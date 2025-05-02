@@ -29,8 +29,8 @@ def draw_snake_part(pos):
                 CUBE_SIZE)
     pygame.draw.rect(screen, GREEN, position)
 
-def draw_food(pos):
-    food_color = (randint(0, 255), randint(0, 255), randint(0, 255))
+def draw_food(pos, poisonous = False):
+    food_color = BLUE if poisonous else RED
     radius = float(CUBE_SIZE) / 2
     position = (pos.x * CUBE_SIZE + radius,
                 pos.y * CUBE_SIZE + radius)
@@ -62,19 +62,18 @@ food = Position(11, 14)
 def fill_bg():
     screen.fill(BLACK)
 
-def draw(snake, food):
+def draw(snake, food, poison):
     fill_bg()
     draw_snake(snake)
     draw_food(food)
+    draw_food(poison, True)
     pygame.display.update()
 
 def set_initial_position():
         snake = INITIAL_SNAKE[:]
         direction = INITIAL_DIRECTION
         set_random_food_position()
-state = GameState(
-    None, None, None, CUBES_NUM
-)
+state = GameState(snake=None, direction=None, food=None, poisonous_food=None, field_size=CUBES_NUM)
 state.set_random_food_position()
 state.set_initial_position()
 
@@ -105,6 +104,6 @@ while True:
             elif event.key == pygame.K_BACKSPACE:
                 state.set_initial_position()
 
-    draw(state.snake, state.food)
+    draw(state.snake, state.food, state.poisonous_food)
     state.step()
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/

@@ -15,6 +15,7 @@ class GameState:
                  snake = None,
                  direction = INITIAL_DIRECTION,
                  food = None,
+                 poisonous_food = None,
                  field_size = 20):
 
         if snake is None:
@@ -22,15 +23,22 @@ class GameState:
         self.snake = snake
         self.direction = direction
         self.field_size = field_size
+
         if food is None:
             self.set_random_food_position()
         else:
             self.food = food
 
+        if poisonous_food is None:
+            self.set_random_food_position(True)
+        else:
+            self.poisonous_food = poisonous_food
+
     def set_initial_position(self):
         self.snake = INITIAL_SNAKE[:]
         self.direction = INITIAL_DIRECTION
         self.set_random_food_position()
+
 
     def next_head(self, direction):
         pos = self.snake[-1]
@@ -54,15 +62,24 @@ class GameState:
                 (pos.x - 1) % self.field_size,
                 pos.y
             )
+        raise Exception(f"{direction} - not known direction")
 
-    def set_random_food_position(self):
+    def set_random_food_position(self, poisonous = False):
         search = True
         while search:
-            self.food = Position(
-                randint(0, self.field_size - 1),
-                randint(0, self.field_size - 1)
-            )
-            search = self.food in self.snake
+            if poisonous:
+                self.poisonous_food = Position(
+                    randint(0, self.field_size - 1),
+                    randint(0, self.field_size - 1)
+                )
+                search = self.poisonous_food in self.snake
+            else:
+                self.food = Position(
+                    randint(0, self.field_size - 1),
+                    randint(0, self.field_size - 1)
+                )
+                search = self.food in self.snake
+
 
     def can_turn(self,direction):
         new_head = self.next_head(direction)
