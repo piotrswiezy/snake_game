@@ -23,6 +23,7 @@ class GameState:
         self.snake = snake
         self.direction = direction
         self.field_size = field_size
+        self.speed_up = False
 
         if food is None:
             self.set_random_food_position()
@@ -82,7 +83,7 @@ class GameState:
                 search = self.food in self.snake
 
 
-    def can_turn(self,direction):
+    def can_turn(self, direction):
         new_head = self.next_head(direction)
         return new_head != self.snake[-2]
 

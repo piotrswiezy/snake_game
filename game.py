@@ -19,8 +19,12 @@ BLACK = (0, 0, 0)
 RED = (255, 0, 0)
 screen.fill(WHITE)
 pygame.display.update()
+clock = pygame.time.Clock()
+paused = False
+speed_up = False
 
-
+def game_speed(speed):
+    clock.tick(speed)
 
 def draw_snake_part(pos):
     position = (pos.x * CUBE_SIZE,
@@ -77,33 +81,46 @@ state = GameState(snake=None, direction=None, food=None, poisonous_food=None, fi
 state.set_random_food_position()
 state.set_initial_position()
 
-clock = pygame.time.Clock()
+
 while True:
-    clock.tick(5 + sqrt(state.snake.__len__() // 2))
+    speed = 5 if not speed_up else 15
+    game_speed(speed + sqrt(state.snake.__len__() // 2))
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             quit()
 
         elif event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_LEFT:
-                state.turn(Direction.LEFT)
+            if event.key == pygame.K_SPACE:
+                paused = not paused
 
-            elif event.key == pygame.K_RIGHT:
-                state.turn(Direction.RIGHT)
+            if not paused:
+                if event.key == pygame.K_LEFT:
+                    state.turn(Direction.LEFT)
 
-            elif event.key == pygame.K_UP:
-                state.turn(Direction.UP)
+                elif event.key == pygame.K_RIGHT:
+                    state.turn(Direction.RIGHT)
 
-            elif event.key == pygame.K_DOWN:
-                state.turn(Direction.DOWN)
+                elif event.key == pygame.K_UP:
+                    state.turn(Direction.UP)
 
-            elif event.key == pygame.K_ESCAPE:
-                quit()
+                elif event.key == pygame.K_DOWN:
+                    state.turn(Direction.DOWN)
 
-            elif event.key == pygame.K_BACKSPACE:
-                state.set_initial_position()
+                elif event.key == pygame.K_ESCAPE:
+                    quit()
 
-    draw(state.snake, state.food, state.poisonous_food)
-    state.step()
+                elif event.key == pygame.K_BACKSPACE:
+                    state.set_initial_position()
+
+                elif event.key == pygame.K_LSHIFT:
+                    speed_up = True
+
+        elif event.type == pygame.KEYUP:
+            speed_up = False
+
+
+    if not paused:
+        draw(state.snake, state.food, state.poisonous_food)
+        state.step()
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/
