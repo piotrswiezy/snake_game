@@ -81,8 +81,7 @@ state = GameState(snake=None, direction=None, food=None, poisonous_food=None, fi
 state.set_random_food_position()
 state.set_initial_position()
 new_head = state.next_head(state.direction)
-points = 1
-first_points = 1
+
 while True:
 
     speed = 5 if not speed_up else 15
