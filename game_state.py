@@ -83,6 +83,7 @@ class GameState:
                 search = self.food in self.snake
 
 
+
     def can_turn(self, direction):
         new_head = self.next_head(direction)
         return new_head != self.snake[-2]
@@ -90,7 +91,7 @@ class GameState:
     def step(self):
         new_head = self.next_head(self.direction)
 
-        collision = new_head in self.snake or new_head == self.poisonous_food
+        collision = new_head in self.snake or new_head in self.snake
         if collision:
             self.set_initial_position()
             return

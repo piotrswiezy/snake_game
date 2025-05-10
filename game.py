@@ -80,11 +80,14 @@ def set_initial_position():
 state = GameState(snake=None, direction=None, food=None, poisonous_food=None, field_size=CUBES_NUM)
 state.set_random_food_position()
 state.set_initial_position()
-
-
+new_head = state.next_head(state.direction)
+points = 1
+first_points = 1
 while True:
+
     speed = 5 if not speed_up else 15
     game_speed(speed + sqrt(state.snake.__len__() // 2))
+
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -93,7 +96,8 @@ while True:
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_SPACE:
                 paused = not paused
-
+            elif event.key == pygame.K_ESCAPE:
+                quit()
             if not paused:
                 if event.key == pygame.K_LEFT:
                     state.turn(Direction.LEFT)
@@ -107,9 +111,6 @@ while True:
                 elif event.key == pygame.K_DOWN:
                     state.turn(Direction.DOWN)
 
-                elif event.key == pygame.K_ESCAPE:
-                    quit()
-
                 elif event.key == pygame.K_BACKSPACE:
                     state.set_initial_position()
 
@@ -117,10 +118,12 @@ while True:
                     speed_up = True
 
         elif event.type == pygame.KEYUP:
-            speed_up = False
+            if event.key == pygame.K_LSHIFT:
+                speed_up = False
 
 
     if not paused:
         draw(state.snake, state.food, state.poisonous_food)
         state.step()
+
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/
