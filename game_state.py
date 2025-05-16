@@ -24,6 +24,8 @@ class GameState:
         self.direction = direction
         self.field_size = field_size
         self.speed_up = False
+        self.points = 0
+        self.dead = False
 
         if food is None:
             self.set_random_food_position()
@@ -40,6 +42,8 @@ class GameState:
         self.direction = INITIAL_DIRECTION
         self.set_random_food_position()
         self.set_random_food_position(True)
+        self.points = 0
+        self.dead = False
 
 
     def next_head(self, direction):
@@ -89,17 +93,30 @@ class GameState:
         return new_head != self.snake[-2]
 
     def step(self):
+        if self.dead:
+            self.set_initial_position()
+            return
+
         new_head = self.next_head(self.direction)
 
         collision = new_head in self.snake or new_head in self.snake
         if collision:
-            self.set_initial_position()
+            self.dead = True
             return
 
         self.snake.append(new_head)
 
         if new_head == self.food:
             self.set_random_food_position()
+            self.points += 1
+            print(f"Masz {self.points} punktów")
+        elif new_head == self.poisonous_food:
+            self.set_random_food_position(True)
+            self.points -= 1
+            if self.points < 0:
+                self.dead = True
+                return
+            print(f"Masz {self.points} punktów")
         else:
             self.snake = self.snake[1:]
 

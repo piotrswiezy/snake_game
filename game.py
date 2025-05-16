@@ -26,12 +26,12 @@ speed_up = False
 def game_speed(speed):
     clock.tick(speed)
 
-def draw_snake_part(pos):
+def draw_snake_part(pos, dead):
     position = (pos.x * CUBE_SIZE,
                 pos.y * CUBE_SIZE,
                 CUBE_SIZE,
                 CUBE_SIZE)
-    pygame.draw.rect(screen, GREEN, position)
+    pygame.draw.rect(screen, RED if dead else GREEN, position)
 
 def draw_food(pos, poisonous = False):
     food_color = BLUE if poisonous else RED
@@ -39,14 +39,6 @@ def draw_food(pos, poisonous = False):
     position = (pos.x * CUBE_SIZE + radius,
                 pos.y * CUBE_SIZE + radius)
     pygame.draw.circle(screen, food_color, position,radius)
-
-snake = [
-    Position(2, 2),
-    Position(3, 2),
-    Position(4, 2),
-    Position(5, 2),
-    Position(5, 1),
-]
 
 
 def set_random_food_position():
@@ -58,17 +50,16 @@ def set_random_food_position():
             randint(0, field_size - 1)
         )
 
-def draw_snake(snake):
+def draw_snake(snake, dead):
     for part in snake:
-        draw_snake_part(part)
-food = Position(11, 14)
+        draw_snake_part(part, dead)
 
 def fill_bg():
     screen.fill(BLACK)
 
-def draw(snake, food, poison):
+def draw(snake, food, poison, dead):
     fill_bg()
-    draw_snake(snake)
+    draw_snake(snake, dead)
     draw_food(food)
     draw_food(poison, True)
     pygame.display.update()
@@ -80,12 +71,10 @@ def set_initial_position():
 state = GameState(snake=None, direction=None, food=None, poisonous_food=None, field_size=CUBES_NUM)
 state.set_random_food_position()
 state.set_initial_position()
-new_head = state.next_head(state.direction)
 
 while True:
-
     speed = 5 if not speed_up else 15
-    game_speed(speed + sqrt(state.snake.__len__() // 2))
+    game_speed(speed + sqrt(1 if state.dead else state.snake.__len__() // 2))
 
 
     for event in pygame.event.get():
@@ -122,7 +111,7 @@ while True:
 
 
     if not paused:
-        draw(state.snake, state.food, state.poisonous_food)
+        draw(state.snake, state.food, state.poisonous_food, state.dead)
         state.step()
 
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/
