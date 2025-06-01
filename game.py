@@ -73,7 +73,7 @@ state.set_random_food_position()
 state.set_initial_position()
 
 while True:
-    speed = 5 if not speed_up else 15
+    speed = 5 if not speed_up else 25
     game_speed(speed + sqrt(1 if state.dead else state.snake.__len__() // 2))
 
 

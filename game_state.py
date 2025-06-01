@@ -4,7 +4,7 @@ from random import randint
 
 INITIAL_SNAKE = [Position(1, 2)]
 INITIAL_DIRECTION = Direction.NO_DIRECTION
-
+NONE = []
 
 class GameState:
     def __init__(self,
@@ -22,6 +22,9 @@ class GameState:
         self.speed_up = False
         self.points = 0
         self.dead = False
+        self.success = False
+        self.game_ower = False
+        self.hearts = 5
 
         if food is None:
             self.set_random_food_position()
@@ -40,7 +43,8 @@ class GameState:
         self.set_random_food_position(True)
         self.points = 0
         self.dead = False
-
+        self.success = False
+        self.game_ower = False
 
     def next_head(self, direction):
         pos = self.snake[-1]
@@ -70,16 +74,16 @@ class GameState:
         search = True
         while search:
             if poisonous:
-                self.poisonous_food = Position(
+                self.poisonous_food = [Position(
                     randint(0, self.field_size - 1),
                     randint(0, self.field_size - 1)
-                )
+                )]
                 search = self.poisonous_food in self.snake
             else:
-                self.food = Position(
+                self.food = [Position(
                     randint(0, self.field_size - 1),
                     randint(0, self.field_size - 1)
-                )
+                )]
                 search = self.food in self.snake
 
 
@@ -93,7 +97,17 @@ class GameState:
     def step(self):
         if self.dead:
             self.set_initial_position()
+            self.hearts -= 1
             return
+        if self.success or self.game_ower:
+            self.food = NONE
+            self.poisonous_food = NONE
+            self.snake = NONE
+        if self.points == 40:
+            self.success = True
+
+        elif self.hearts == 0:
+            self.game_ower = True
 
         if self.direction == Direction.NO_DIRECTION:
             return
