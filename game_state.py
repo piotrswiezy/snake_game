@@ -2,12 +2,8 @@ from position import Position
 from direction import Direction
 from random import randint
 
-INITIAL_SNAKE = [
-    Position(1, 2),
-    Position(2, 2),
-    Position(3, 2)
-]
-INITIAL_DIRECTION = Direction.RIGHT
+INITIAL_SNAKE = [Position(1, 2)]
+INITIAL_DIRECTION = Direction.NO_DIRECTION
 
 
 class GameState:
@@ -90,11 +86,16 @@ class GameState:
 
     def can_turn(self, direction):
         new_head = self.next_head(direction)
-        return new_head != self.snake[-2]
+        if self.snake.__len__() > 1:
+            return new_head != self.snake[-2]
+        return True
 
     def step(self):
         if self.dead:
             self.set_initial_position()
+            return
+
+        if self.direction == Direction.NO_DIRECTION:
             return
 
         new_head = self.next_head(self.direction)

@@ -91,6 +91,24 @@ class GameStateTest(unittest.TestCase):
         ]
         self.assertEqual(expected_state, state.snake)
 
+    def test_snake_should_not_move_if_no_direction(self):
+        state = GameState(
+            snake=[
+                Position(1, 1)
+            ],
+            direction=Direction.NO_DIRECTION,
+            food=Position(10, 10),
+            poisonous_food = Position(10, 20),
+            field_size=20
+        )
+
+        state.step()
+
+        expected_state = [
+            Position(1, 1)
+        ]
+        self.assertEqual(expected_state, state.snake)
+
     def test_snake_should_move_up_on_top(self):
         state = GameState(
             snake = [
@@ -131,6 +149,7 @@ class GameStateTest(unittest.TestCase):
             Position(19, 1),
             Position(0, 1)
         ]
+        self.assertEqual(expected_state, state.snake)
 
     def test_snake_should_move_down_on_bottom(self):
         state = GameState(
@@ -211,7 +230,9 @@ class GameStateTest(unittest.TestCase):
         )
 
         state.step()
+        self.assertTrue(state.dead)
 
+        state.step()
         from game_state import INITIAL_SNAKE
         self.assertEqual(INITIAL_SNAKE, state.snake)
         self.assertFalse(state.food in state.snake)
@@ -236,7 +257,9 @@ class GameStateTest(unittest.TestCase):
         )
 
         state.step()
+        self.assertTrue(state.dead)
 
+        state.step()
         from game_state import INITIAL_SNAKE
         self.assertEqual(INITIAL_SNAKE, state.snake)
         self.assertFalse(state.poisonous_food in state.snake)
